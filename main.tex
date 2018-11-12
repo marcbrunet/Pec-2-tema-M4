@@ -48,6 +48,156 @@
 
 \section{El departamento técnico ya ha comprado un servidor, de modelo PC de tipo torre. Dispone de 4 bahías de disco S-ATA, pero de momento sin ninguna unidad de disco instalada. Teniendo en cuenta los precios actuales de discos duros internos, analizar qué configuración de discos se debería comprar para disponer de:}
 
-\subsection{}
+primero realizaremos un pequenyo resumen de los discos que exsisten i los que nos escagan mengor para este uso en concreto:\smallskip
+
+\textbf{SSD}: son dicos de estado solidoo no tienen partes moviles, como ventage tenenmos una mayor velocoidad de lectura o escritura y un consumo menor de potencia, como desventaga tenenmos un nuro limitado es ecrituras i esto determina la vida del disco.\smallskip
+
+\textbf{HDD}: son discon que se compemen por unos cuantos dicos girando y unos lectores moviendece i gravado la informacion en ellos, son mas lentos que los de estado solido, tienen un menor precio i sulen fallar menos. \smallskip
+
+una vez tenem los tipos de disco nesesarios montaria un disco de estado solidio para el sistema de 1TB si la opocion es muy cara o se sale del presuspeto podriamos pensar en reducir el tamanyo del sistema o buscar una solucion en HDD todo i que pensalizara el redimento del equipo, i al quedar con 3 conestores S-SATA disposile i desear protecion contra errores buscaremos un raid 5, nos proporcionara 2 vezez la campacidad e los dico que montemos i con protencion de falladas mecanica, pro tanto la configuracion idela seria:\smallskip
+
+1 disco SSD 1TB SATA  y 3 discos  HDD 2,5 TB SATA\smallskip
+
+encontrar disco de 2,5TB puede ser complicado por eso escoageremos discos de 3TB para degar una unidad final de 6 TB en raid 5, depues particionaremos el disco solido para intalar el sistema operativo dependera de la configuracion del sistam ya sea windows o linux, en el sistema de fixero que disponemos de 3 discos HDD usaremos el raid para montar el raid usaremos un estorno virtual con discos de 20 GB como pruba de consepto i sistema operativo fedora. nos quedara una distibucion de discos para el rayd similar a esto 
+
+\begin{lstlisting}[basicstyle=\tiny, language=bash]
+root@localhost marc]# fdisk -l | grep sd
+Disk /dev/sda: 20 GiB, 21474836480 bytes, 41943040 sectors
+/dev/sda1  *            2048  2099199  2097152   1G 83 Linux
+/dev/sda2            2099200 41943039 39843840  19G 8e Linux LVM
+Disk /dev/sdb: 20 GiB, 21474836480 bytes, 41943040 sectors
+Disk /dev/sdd: 20 GiB, 21474836480 bytes, 41943040 sectors
+Disk /dev/sdc: 20 GiB, 21474836480 bytes, 41943040 sectors
+
+\end{lstlisting}
+
+aqui tenemos los disoc que vamos a usar pera crear el raid, para acelo yntalamos el paquete \texttt{mdadm}, tendremos que formater las particiones para soporar el reid por ello utilisaremos el comando fdisk per la nuevas partivones con el tipo \texttt{linux-raid}, para poderlas anyadir al controlador raid, para nayadir las unidades al controlador usaremso el comando \texttt{mdadm --create /dev/md0 --level=5 --raid-devices=3 /dev/sdb1 /dev/sdc1 /dev/sdd1}  aore dispodremos de un nuevo "dispositivo" en /dev/md0 que sera el punto de montage del disco raid, verificamos i  cremaos un sistema de ficheros en el raid, con los comandos \texttt{mdadm --detail /dev/md0} y \texttt{mkfs.ext4 /dev/md0}.\smallskip
+
+aora tendre un disco con raid 5 solo nos quedara montarlo i configurar que en el seigente reinicio continue sinedo el mismo con los comandos, \texttt{mkdir /mnt/raid5 | mount /dev/md0 /mnt/raid5/} creamos el punto de montage i lo montamos,  anyadimos una estrada en \texttt{/etc/fstab} para montar automanticamnte en el inicio el sistema de ficheros, aora ja tendepremos el dispositibo echo pero al riniciar podria aparacenr en mb0 sino en cualwuer numero pera forzarlo usamos \texttt{mdadm --detail --scan --verbose >> /etc/mdadm.conf} para forcar la configuracon.\smallskip
+
+acemos unas pruvas de velociad de esritura comparado con un dico sin raid
+
+\begin{lstlisting}[basicstyle=\tiny, language=bash]
+[root@localhost ~]# dd if=/dev/zero of=/mnt/raid5/test bs=64k count=16k conv=fdatasync
+16384+0 registres llegits
+16384+0 registres escrits
+1073741824 octets (1,1 GB, 1,0 GiB) copiats, 2,37882 s, 451 MB/s
+
+\end{lstlisting}
+
+\begin{lstlisting}[basicstyle=\tiny, language=bash]
+[root@localhost ~]# dd if=/dev/zero of=/run/media/marc/test/test bs=64k count=16k conv=fdatasync
+16384+0 registres llegits
+16384+0 registres escrits
+1073741824 octets (1,1 GB, 1,0 GiB) copiats, 0,964222 s, 1,1 GB/s
+
+\end{lstlisting}
+podemos observer que el disco sin raid es casi el doble de rapido que el dico con raid ja que la escriptura es sincrona i port tanto tenemos que escrivir en varios disco i calcular paridades el sistema se ve penalizado pero para el uso que le vamos a dar no es un efecto importatne. 
+
+commprovamos la disponibiilidad de los archvos en la fallada de una disco para ello tenemos un fichero de 1GB creado en el raid: 
+
+\begin{lstlisting}[basicstyle=\tiny, language=bash]
+[root@localhost raid5]# ls -lh
+total 1,1G
+drwx------. 2 root root  16K 12 nov. 05:26 lost+found
+-rw-r--r--. 1 root root 1,0G 12 nov. 06:41 test
+\end{lstlisting}
+
+a este archivo le aremos el sha256 al fichero i marcaremos un disco como fallido i volvermos a crear el sha256 para comprovar la integridad de los datos 
+\begin{lstlisting}[basicstyle=\tiny, language=bash]
+[root@localhost raid5]# sha256sum test 
+49bc20df15e412a64472421e13fe86ff1c5165e18b2afccf160d4dc19fe68a14  test
+[root@localhost raid5]# mdadm --manage /dev/md0 --fail /dev/sdc1 
+mdadm: set /dev/sdc1 faulty in /dev/md0
+[root@localhost raid5]# mdadm --detail /dev/md0
+/dev/md0:
+           Version : 1.2
+     Creation Time : Mon Nov 12 05:21:51 2018
+        Raid Level : raid5
+        Array Size : 41906176 (39.96 GiB 42.91 GB)
+     Used Dev Size : 20953088 (19.98 GiB 21.46 GB)
+      Raid Devices : 3
+     Total Devices : 3
+       Persistence : Superblock is persistent
+
+       Update Time : Mon Nov 12 06:50:43 2018
+             State : clean, degraded 
+    Active Devices : 2
+   Working Devices : 2
+    Failed Devices : 1
+     Spare Devices : 0
+
+            Layout : left-symmetric
+        Chunk Size : 512K
+
+Consistency Policy : resync
+
+              Name : localhost.localdomain:0  (local to host localhost.localdomain)
+              UUID : 9d4f3fd9:aeea6db9:2f93c665:53d77cfb
+            Events : 20
+
+    Number   Major   Minor   RaidDevice State
+       0       8       17        0      active sync   /dev/sdb1
+       -       0        0        1      removed
+       3       8       49        2      active sync   /dev/sdd1
+
+       1       8       33        -      faulty   /dev/sdc1
+[root@localhost raid5]# sha256sum test 
+49bc20df15e412a64472421e13fe86ff1c5165e18b2afccf160d4dc19fe68a14  test
+\end{lstlisting}
+aora provamos de crear un fixero nuevo con un dico parado i lo volvemos anyadir, depeus de la siconizacion vemos que el dico vuelve a estar ativo i comproavoas d enuve el sha256 i vemos que vuelven a coincidir 
+
+\begin{lstlisting}[basicstyle=\tiny, language=bash]s
+[root@localhost raid5]# dd if=/dev/zero of=/mnt/raid5/test2 bs=64k count=16k conv=fdatasync
+16384+0 registres llegits
+16384+0 registres escrits
+1073741824 octets (1,1 GB, 1,0 GiB) copiats, 1,41955 s, 756 MB/s
+[root@localhost raid5]# sha256sum test2 
+49bc20df15e412a64472421e13fe86ff1c5165e18b2afccf160d4dc19fe68a14  test2
+root@localhost raid5]# mdadm --manage /dev/md0 --run /dev/sdc1 
+mdadm: Must give one of -a/-r/-f for subsequent devices at /dev/sdc1
+[root@localhost raid5]# mdadm --detail /dev/md0
+/dev/md0:
+           Version : 1.2
+     Creation Time : Mon Nov 12 05:21:51 2018
+        Raid Level : raid5
+        Array Size : 41906176 (39.96 GiB 42.91 GB)
+     Used Dev Size : 20953088 (19.98 GiB 21.46 GB)
+      Raid Devices : 3
+     Total Devices : 3
+       Persistence : Superblock is persistent
+
+       Update Time : Mon Nov 12 07:00:59 2018
+             State : clean 
+    Active Devices : 3
+   Working Devices : 3
+    Failed Devices : 0
+     Spare Devices : 0
+
+            Layout : left-symmetric
+        Chunk Size : 512K
+
+Consistency Policy : resync
+
+              Name : localhost.localdomain:0  (local to host localhost.localdomain)
+              UUID : 9d4f3fd9:aeea6db9:2f93c665:53d77cfb
+            Events : 65
+
+    Number   Major   Minor   RaidDevice State
+       0       8       17        0      active sync   /dev/sdb1
+       4       8       33        1      active sync   /dev/sdc1
+       3       8       49        2      active sync   /dev/sdd1
+[root@localhost raid5]# sha256sum test2 
+49bc20df15e412a64472421e13fe86ff1c5165e18b2afccf160d4dc19fe68a14  test2
+\end{lstlisting}
+
+\section{El departamento técnico ha sentido hablar del sistema LVM y desean hacer cierta configuraciones/pruebas con ello. Con el fin de tomar la decisión correcta realizarán una pruebas con LVM sobre un sistema operativo Gnu/Linux virtualizado (p.ej. con VirtualBox).}
+\clearpage
+
+\clearpage
+\section{bibliografia}
+https://www.tecmint.com/create-raid-5-in-linux/
+https://es.wikipedia.org/wiki/RAID
+https://getfedora.org/es/workstation/
 
 \end{document}
