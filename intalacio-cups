@@ -1,0 +1,106 @@
+[root@localhost ~]# yum install cups
+Última comprovació del venciment de les metadades: fa 0:00:10 el dimarts, 13 de novembre de 2018, 08:15:15 EST.
+S'han resolt les dependències.
+=========================================================================================================
+ Paquet                        Arq.               Versió                       Dipòsit              Mida
+=========================================================================================================
+Installing:
+ cups                          x86_64             1:2.2.8-6.fc29               updates             1.3 M
+Upgrading:
+ cups-filesystem               noarch             1:2.2.8-6.fc29               updates              12 k
+ cups-libs                     x86_64             1:2.2.8-6.fc29               updates             323 k
+Instal·lar les dependències:
+ cups-client                   x86_64             1:2.2.8-6.fc29               updates              64 k
+ cups-ipptool                  x86_64             1:2.2.8-6.fc29               updates             5.7 M
+ cups-filters                  x86_64             1.20.3-9.fc29                fedora              736 k
+ cups-filters-libs             x86_64             1.20.3-9.fc29                fedora              118 k
+ poppler-utils                 x86_64             0.67.0-1.fc29                fedora              187 k
+ qpdf-libs                     x86_64             8.2.1-1.fc29                 fedora              387 k
+
+Resum de la transacció
+=========================================================================================================
+Instal·la   7 Paquets
+Actualitza  2 Paquets
+
+Mida total de la baixada: 8.8 M
+És correcte? [s/N]: s
+Es baixen els paquets:
+(1/9): cups-client-2.2.8-6.fc29.x86_64.rpm                               197 kB/s |  64 kB     00:00    
+(2/9): cups-2.2.8-6.fc29.x86_64.rpm                                      2.2 MB/s | 1.3 MB     00:00    
+(3/9): cups-filters-1.20.3-9.fc29.x86_64.rpm                             1.6 MB/s | 736 kB     00:00    
+(4/9): poppler-utils-0.67.0-1.fc29.x86_64.rpm                            3.2 MB/s | 187 kB     00:00    
+(5/9): cups-filters-libs-1.20.3-9.fc29.x86_64.rpm                        417 kB/s | 118 kB     00:00    
+(6/9): qpdf-libs-8.2.1-1.fc29.x86_64.rpm                                 4.0 MB/s | 387 kB     00:00    
+(7/9): cups-filesystem-2.2.8-6.fc29.noarch.rpm                           151 kB/s |  12 kB     00:00    
+(8/9): cups-libs-2.2.8-6.fc29.x86_64.rpm                                 3.9 MB/s | 323 kB     00:00    
+(9/9): cups-ipptool-2.2.8-6.fc29.x86_64.rpm                              1.4 MB/s | 5.7 MB     00:04    
+---------------------------------------------------------------------------------------------------------
+Total                                                                    1.3 MB/s | 8.8 MB     00:06     
+S'executa la comprovació de la transacció
+La comprovació de la transacció ha tingut èxit.
+S'executa la prova de la transacció
+La prova de la transacció ha tingut èxit.
+S'executa la transacció
+  Preparar            :                                                                              1/1 
+Upgrade: cups-libs-1:2.2.8-6.fc29.x86_64
+  Upgrading           : cups-libs-1:2.2.8-6.fc29.x86_64                                             1/11 
+Upgrade: cups-libs-1:2.2.8-6.fc29.x86_64
+Upgrade: cups-filesystem-1:2.2.8-6.fc29.noarch
+  Upgrading           : cups-filesystem-1:2.2.8-6.fc29.noarch                                       2/11 
+Upgrade: cups-filesystem-1:2.2.8-6.fc29.noarch
+Installed: cups-client-1:2.2.8-6.fc29.x86_64
+  Installing          : cups-client-1:2.2.8-6.fc29.x86_64                                           3/11 
+  Executar l'scriptlet: cups-client-1:2.2.8-6.fc29.x86_64                                           3/11 
+Installed: cups-client-1:2.2.8-6.fc29.x86_64
+Installed: cups-ipptool-1:2.2.8-6.fc29.x86_64
+  Installing          : cups-ipptool-1:2.2.8-6.fc29.x86_64                                          4/11 
+Installed: cups-ipptool-1:2.2.8-6.fc29.x86_64
+Installed: cups-filters-libs-1.20.3-9.fc29.x86_64
+  Installing          : cups-filters-libs-1.20.3-9.fc29.x86_64                                      5/11 
+  Executar l'scriptlet: cups-filters-libs-1.20.3-9.fc29.x86_64                                      5/11 
+Installed: cups-filters-libs-1.20.3-9.fc29.x86_64
+Installed: qpdf-libs-8.2.1-1.fc29.x86_64
+  Installing          : qpdf-libs-8.2.1-1.fc29.x86_64                                               6/11 
+Installed: qpdf-libs-8.2.1-1.fc29.x86_64
+Installed: poppler-utils-0.67.0-1.fc29.x86_64
+  Installing          : poppler-utils-0.67.0-1.fc29.x86_64                                          7/11 
+Installed: poppler-utils-0.67.0-1.fc29.x86_64
+Installed: cups-filters-1.20.3-9.fc29.x86_64
+  Installing          : cups-filters-1.20.3-9.fc29.x86_64                                           8/11 
+  Executar l'scriptlet: cups-filters-1.20.3-9.fc29.x86_64                                           8/11 
+Installed: cups-filters-1.20.3-9.fc29.x86_64
+Installed: cups-1:2.2.8-6.fc29.x86_64
+  Installing          : cups-1:2.2.8-6.fc29.x86_64                                                  9/11 
+  Executar l'scriptlet: cups-1:2.2.8-6.fc29.x86_64                                                  9/11 
+Installed: cups-1:2.2.8-6.fc29.x86_64
+Upgraded: cups-filesystem-1:2.2.8-5.fc29.noarch
+  Netejar             : cups-filesystem-1:2.2.8-5.fc29.noarch                                      10/11 
+Upgraded: cups-filesystem-1:2.2.8-5.fc29.noarch
+Upgraded: cups-libs-1:2.2.8-5.fc29.x86_64
+  Netejar             : cups-libs-1:2.2.8-5.fc29.x86_64                                            11/11 
+Upgraded: cups-libs-1:2.2.8-5.fc29.x86_64
+  Executar l'scriptlet: cups-libs-1:2.2.8-5.fc29.x86_64                                            11/11 
+  Verificar           : cups-1:2.2.8-6.fc29.x86_64                                                  1/11 
+  Verificar           : cups-client-1:2.2.8-6.fc29.x86_64                                           2/11 
+  Verificar           : cups-ipptool-1:2.2.8-6.fc29.x86_64                                          3/11 
+  Verificar           : cups-filters-1.20.3-9.fc29.x86_64                                           4/11 
+  Verificar           : cups-filters-libs-1.20.3-9.fc29.x86_64                                      5/11 
+  Verificar           : poppler-utils-0.67.0-1.fc29.x86_64                                          6/11 
+  Verificar           : qpdf-libs-8.2.1-1.fc29.x86_64                                               7/11 
+  Verificar           : cups-filesystem-1:2.2.8-6.fc29.noarch                                       8/11 
+  Verificar           : cups-filesystem-1:2.2.8-5.fc29.noarch                                       9/11 
+  Verificar           : cups-libs-1:2.2.8-6.fc29.x86_64                                            10/11 
+  Verificar           : cups-libs-1:2.2.8-5.fc29.x86_64                                            11/11 
+
+Actualitzat:
+  cups-filesystem-1:2.2.8-6.fc29.noarch                  cups-libs-1:2.2.8-6.fc29.x86_64                 
+
+Instal·lat:
+  cups-1:2.2.8-6.fc29.x86_64                            cups-client-1:2.2.8-6.fc29.x86_64                
+  cups-ipptool-1:2.2.8-6.fc29.x86_64                    cups-filters-1.20.3-9.fc29.x86_64                
+  cups-filters-libs-1.20.3-9.fc29.x86_64                poppler-utils-0.67.0-1.fc29.x86_64               
+  qpdf-libs-8.2.1-1.fc29.x86_64                        
+
+S'ha completat!
+
+go to http://localhost:631/
