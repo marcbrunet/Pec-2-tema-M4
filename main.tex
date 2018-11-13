@@ -147,57 +147,229 @@ Consistency Policy : resync
 \end{lstlisting}
 aora provamos de crear un fixero nuevo con un dico parado i lo volvemos anyadir, depeus de la siconizacion vemos que el dico vuelve a estar ativo i comproavoas d enuve el sha256 i vemos que vuelven a coincidir 
 
-\begin{lstlisting}[basicstyle=\tiny, language=bash]s
+\begin{lstlisting}[basicstyle=\tiny, language=bash]
 [root@localhost raid5]# dd if=/dev/zero of=/mnt/raid5/test2 bs=64k count=16k conv=fdatasync
 16384+0 registres llegits
 16384+0 registres escrits
 1073741824 octets (1,1 GB, 1,0 GiB) copiats, 1,41955 s, 756 MB/s
 [root@localhost raid5]# sha256sum test2 
 49bc20df15e412a64472421e13fe86ff1c5165e18b2afccf160d4dc19fe68a14  test2
-root@localhost raid5]# mdadm --manage /dev/md0 --run /dev/sdc1 
+root@localhost raid5]# mdadm --manage /dev/md0 --add /dev/sdc1 
 mdadm: Must give one of -a/-r/-f for subsequent devices at /dev/sdc1
-[root@localhost raid5]# mdadm --detail /dev/md0
-/dev/md0:
-           Version : 1.2
-     Creation Time : Mon Nov 12 05:21:51 2018
-        Raid Level : raid5
-        Array Size : 41906176 (39.96 GiB 42.91 GB)
-     Used Dev Size : 20953088 (19.98 GiB 21.46 GB)
-      Raid Devices : 3
-     Total Devices : 3
-       Persistence : Superblock is persistent
-
-       Update Time : Mon Nov 12 07:00:59 2018
-             State : clean 
-    Active Devices : 3
-   Working Devices : 3
-    Failed Devices : 0
-     Spare Devices : 0
-
-            Layout : left-symmetric
-        Chunk Size : 512K
-
-Consistency Policy : resync
-
-              Name : localhost.localdomain:0  (local to host localhost.localdomain)
-              UUID : 9d4f3fd9:aeea6db9:2f93c665:53d77cfb
-            Events : 65
-
-    Number   Major   Minor   RaidDevice State
-       0       8       17        0      active sync   /dev/sdb1
-       4       8       33        1      active sync   /dev/sdc1
-       3       8       49        2      active sync   /dev/sdd1
 [root@localhost raid5]# sha256sum test2 
 49bc20df15e412a64472421e13fe86ff1c5165e18b2afccf160d4dc19fe68a14  test2
 \end{lstlisting}
 
 \section{El departamento técnico ha sentido hablar del sistema LVM y desean hacer cierta configuraciones/pruebas con ello. Con el fin de tomar la decisión correcta realizarán una pruebas con LVM sobre un sistema operativo Gnu/Linux virtualizado (p.ej. con VirtualBox).}
+
+el sistema de fichero o gestion de dicos LVM es un sistema que nos permite admiiistrar parciones fisicas ambtaiendonos de las mismas, es decir nos permite gestionar el espacio de varias particiones como si fuera uno solo independientemente de la cantidad de discos o particiones que estemeos usando. 
+
+primero creamos un grupo de volúmenes con un disco y anyadimos el segundo disco prodiramos acelo con particions del propio dico, despues comprovamos el estado de grupo de volúmenes
+
+\begin{lstlisting}[basicstyle=\tiny, language=bash]
+[root@localhost ~]# vgcreate testing /dev/sdb 
+  Volume group "testing" successfully created
+[root@localhost ~]# vgextend testing /dev/sdc
+  Volume group "testing" successfully extended
+[root@localhost ~]# vgdisplay
+  --- Volume group ---
+  VG Name               testing
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               39,99 GiB
+  PE Size               4,00 MiB
+  Total PE              10238
+  Alloc PE / Size       0 / 0   
+  Free  PE / Size       10238 / 39,99 GiB
+  VG UUID               d9wh5v-cLu3-GIpu-oIiR-4Y1Q-6PL4-to7seQ
+
+\end{lstlisting}
+
+aora tenemos el grupo de volúmenes testing con 40Gb disponible para crear nuestro volumenes nos diponemos a crear un volum de 10GB con miror:
+
+\begin{lstlisting}[basicstyle=\tiny, language=bash]
+[root@localhost ~]# lvcreate -L 10G -m1 -n mirrorlv testing 
+  Logical volume "mirrorlv" created.
+
+[root@localhost ~]# lvdisplay -v
+  --- Logical volume ---
+  LV Path                /dev/testing/mirrorlv
+  LV Name                mirrorlv
+  VG Name                testing
+  LV UUID                hnWx23-wDx3-37dR-r5aH-rEsg-zL7U-gfZFVv
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2018-11-12 10:19:56 -0500
+  LV Status              available
+  # open                 0
+  LV Size                10,00 GiB
+  Current LE             2560
+  Mirrored volumes       2
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:4
+
+
+\end{lstlisting}
+
+aora ja tenemos un particion de 10G com Mirror nos disponemos a montarla i acer que se monte automaticamente al inicio del sistema y darle permisos a los grupos indicados, 
+
+\begin{lstlisting}[basicstyle=\tiny, language=bash]
+[root@localhost ~]# mkfs -t ext4 /dev/testing/mirrorlv 
+mke2fs 1.44.3 (10-July-2018)
+S'està creant un sistema de fitxers amb 2621440 4k blocs i 655360 nodes-i
+UUID del sistema de fitxers=1a7f12b1-1175-4d08-8d11-a680e40b1a21
+Còpies de seguretat del superbloc desades en els blocs: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632
+
+S'assignen les taules de grup: fet                            
+Escriptura de les taules de nodes-i:fet                            
+Creació del registre de transaccions (16384 blocs): fet
+Escriptura de la informació dels superblocs i de comptabilitat del sistema de fitxers:fet  
+
+[root@localhost ~]#  mkdir  /media/lvm/  | mount /dev/testing/mirrorlv  /media/lvm/ 
+
+[root@localhost ~]# nano /etc/fstab 
+#
+# /etc/fstab
+# Created by anaconda on Mon Nov 12 10:41:19 2018
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk/'.
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info.
+#
+# After editing this file, run 'systemctl daemon-reload' to update systemd
+# units generated from this file.
+#
+UUID=95fcc379-d028-497b-8d0e-16ed83639c5f   /                   ext4    defaults        1 1
+UUID=a80a1fcb-5f0c-4622-9b70-826abf466634   /boot               ext4    defaults        1 2
+UUID=59487c18-1ecf-44b1-81ce-aa897a931845   swap                swap    defaults        0 0
+/dev/testing/mirrorlv                       /media/lvm/      ext4    defaults        0 1
+[root@localhost ~]# sudo chown -R :profesores /media/lvm/
+root@localhost ~]# sudo chmod -R 774 /media/lvm/
+[marc@localhost ~]$ ls -lh  /media
+total 4,0K
+drwxrwxr--. 4 root profesores 4,0K 13 nov. 02:42 lvm
+
+\end{lstlisting}
+
+provarem de extendre el volum avan de afagir el tercer disco i torarlo a extendre amb el 3r disco 
+
+\begin{lstlisting}[basicstyle=\tiny, language=bash]
+[root@localhost ~]# lvextend -l +2024 /dev/testing/mirrorlv 
+  Extending 2 mirror images.
+  Size of logical volume testing/mirrorlv changed from 10,00 GiB (2560 extents) to <17,91 GiB (4584 extents).
+  Logical volume testing/mirrorlv successfully resized
+[root@localhost ~]# resize2fs /dev/testing/mirrorlv 
+resize2fs 1.44.3 (10-July-2018)
+El sistema de fitxers a /dev/testing/mirrorlv està muntat a /media/lvm; cal un canvi de mida en línia
+old_desc_blocks = 2, new_desc_blocks = 3
+El sistema de fitxers a /dev/testing/mirrorlv té ara una llargària de 4694016 (4k) blocs.
+[root@localhost ~]# pvcreate /dev/sdd 
+  Physical volume "/dev/sdd" successfully created.
+[root@localhost ~]# pvs
+  PV         VG      Fmt  Attr PSize   PFree 
+  /dev/sdb   testing lvm2 a--  <20,00g <2,09g
+  /dev/sdc   testing lvm2 a--  <20,00g <2,09g
+  /dev/sdd           lvm2 ---   20,00g 20,00g
+[root@localhost ~]# vgextend testing /dev/sdd 
+  Volume group "testing" successfully extended
+
+[root@localhost marc]# lvdisplay 
+  --- Logical volume ---
+  LV Path                /dev/testing/mirrorlv
+  LV Name                mirrorlv
+  VG Name                testing
+  LV UUID                hnWx23-wDx3-37dR-r5aH-rEsg-zL7U-gfZFVv
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2018-11-12 10:19:56 -0500
+  LV Status              available
+  # open                 1
+  LV Size                <19,91 GiB
+  Current LE             5096
+  Mirrored volumes       2
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:4
+   
+[root@localhost marc]# vgdisplay 
+  --- Volume group ---
+  VG Name               testing
+  System ID             
+  Format                lvm2
+  Metadata Areas        3
+  Metadata Sequence No  8
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               1
+  Max PV                0
+  Cur PV                3
+  Act PV                3
+  VG Size               <59,99 GiB
+  PE Size               4,00 MiB
+  Total PE              15357
+  Alloc PE / Size       10194 / 39,82 GiB
+  Free  PE / Size       5163 / <20,17 GiB
+  VG UUID               d9wh5v-cLu3-GIpu-oIiR-4Y1Q-6PL4-to7seQ
+
+
+
+\end{lstlisting}
+
+nos encontramos con un problema no nos dega anayadir el tercer disco supogo que sera por probelmas del mirroring al tener sdb ducplicao con sdc i sdd no esta duplicado provamos de anyadir un cuarto disco,  al fagair un cuart disco ara prodrem fer el mirroring i ens dexa entandre la particio logica fins a 40Gb la mitat dels discos que tenim montats, anem a provar el randiment sota questa configuracio. 
+
+\begin{lstlisting}[basicstyle=\tiny, language=bash]
+[root@localhost marc]# dd if=/dev/zero of=/media/lvm/test bs=64k count=16k conv=fdatasync
+16384+0 registres llegits
+16384+0 registres escrits
+1073741824 octets (1,1 GB, 1,0 GiB) copiats, 0,903105 s, 1,2 GB/s
+
+[marc@localhost lvm]$ sha256sum testurandom 
+e9a68b46244e31b70c605046c3c028c2518e981d3376606d71ab282e142a09e8  test
+[root@localhost lvm]# pvs -o+pv_used
+  PV         VG      Fmt  Attr PSize   PFree    Used  
+  /dev/sdb1  testing lvm2 a--  <20,00g 1016,00m 19,00g
+  /dev/sdc1  testing lvm2 a--  <20,00g 1016,00m 19,00g
+[root@localhost lvm]# pvs -o+pv_used
+  WARNING: Device for PV Q33TAD-58db-S7Y4-JQO4-cd9F-5tFF-CWJGfs not found or rejected by a filter.
+  Couldn't find device with uuid Q33TAD-58db-S7Y4-JQO4-cd9F-5tFF-CWJGfs.
+  WARNING: Couldn't find all devices for LV testing/mirrorlv_rimage_0 while checking used and assumed devices.
+  WARNING: Couldn't find all devices for LV testing/mirrorlv_rmeta_0 while checking used and assumed devices.
+  PV         VG      Fmt  Attr PSize   PFree    Used  
+  /dev/sdc1  testing lvm2 a--  <20,00g 1016,00m 19,00g
+  [unknown]  testing lvm2 a-m  <20,00g 1016,00m 19,00g
+[root@localhost lvm]# sha256sum testurandom 
+e9a68b46244e31b70c605046c3c028c2518e981d3376606d71ab282e142a09e8  test
+
+\end{lstlisting}\footnote{comparem amb el test del aparatat enterior del raid 5}
+podemos comprovar que depues de eliminar un dico de manera forcada se pueden recuperar los datos como conclusion se pude tener que el sistema de replicaion puede ser util para sistema en que los datos nesesitan un velocidad de lectirua i escritura alta todo i que ai sistemas megores pero como raid i permacnica de tatos es un sistema muy limitado al acer copias completas de los ficheros
+
+\subsection{comparativa entre raid 5 i LVM}
+
+
 \clearpage
 
 \clearpage
 \section{bibliografia}
-https://www.tecmint.com/create-raid-5-in-linux/
-https://es.wikipedia.org/wiki/RAID
-https://getfedora.org/es/workstation/
+https://www.tecmint.com/create-raid-5-in-linux/ \smallskip
 
+https://es.wikipedia.org/wiki/RAID\smallskip
+
+https://getfedora.org/es/workstation/\smallskip
+
+https://www.tecmint.com/extend-and-reduce-lvms-in-linux/\smallskip
 \end{document}
