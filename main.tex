@@ -360,6 +360,20 @@ podemos comprovar que depues de eliminar un dico de manera forcada se pueden rec
 
 \subsection{comparativa entre raid 5 i LVM}
 
+en los dos sistemas tenemos vengtagsas i enconvenientes, pro empezar a comprar la facilidad de montage i mantenimento, en LVM tenemos un mantenimento perfecto ja que podemos extender unidades sin limite es decir nos desentendemos del harware para acer disco con la suma de discos o parte de ellos, en cavio en raid nesesitamos el disco como tal portanto estamso limitados a la capcaidad del disco o de la capacidad resultante del raid, i si se tiene que extander tendremos mas problemas que con LVM por controa el raid 5 es mucho mas eficas en el tema de optimizacion del espacio  apartir de 3 discos el espacio resultante es n-1 por lo tanto solo perdemos un disco al acer el reid en cavio en LVM el resultado es N/2 pro tanto perdemos mucha capacidad.\smallskip
+
+velociad i rendiemnto, en lvm la velocidad no se ve tan penalizada practimente 0 en dos discos con replicaicon i sin replicaion al estar en RAID 0 la velocidad tendria que aumentar mucho, en camvi en Raid5 la velocidad se ve pensalisada a la mitat mas o menos al tener que acer calculos i escrivir en varios discos los mismos datos
+
+solucion mixa, una buena opcion seria montar un raid5 para la persistencia de los datos con un LVM por encia para obtener la fexibilidad de operacion, tendriamos que tener cuidada al anyadir puntos de mosntge al LVM ja que si uno de ellos no tinene redundacia podriamos perder totdo el sistema, ja que con el raid 0 de LVM podria diponer solo de la mitat de nuestros arxivos. aparate nos viraroa la opcion de mas velocidad de lectura i escritua i manteniendo la peristencia de datos, i la facilidad de reducir i extender volumenso escima de un raid, 
+
+solucion extendida, ja que los documentas que se comenta son archovos de poco uso, basicmante de lectura i alguna escritura se podria obtar en montar un S3 i/o un S3ql para intentar reducir el consumo de espaci del disco. apart si cpontrolamos los discos raid con el lvm podem asiganr un segundo punto de montage del raid totalmente aislados, tambien podriamos gestionar amazenaminto sin raid, tendriamos que montar una structura similar a: 
+
+\includegraphics[width=\textwidth]{structure.png}
+
+\section{En este ejercicio se realizará la configuración de la impresora que se encuentra asociada al servidor y a la cual pueden acceder diferentes usuarios. Instalar un servidor de impresión CUPS y configurarlo de forma tal que:
+}
+
+
 
 \clearpage
 
@@ -372,4 +386,6 @@ https://es.wikipedia.org/wiki/RAID\smallskip
 https://getfedora.org/es/workstation/\smallskip
 
 https://www.tecmint.com/extend-and-reduce-lvms-in-linux/\smallskip
+
+https://www.draw.io\smallskip
 \end{document}
