@@ -103,6 +103,7 @@ drwx------. 2 root root  16K 12 nov. 05:26 lost+found
 -rw-r--r--. 1 root root 1,0G 12 nov. 06:41 test
 \end{lstlisting}
 
+\clearpage
 a este archivo le aremos el sha256 al fichero i marcaremos un disco como fallido i volvermos a crear el sha256 para comprovar la integridad de los datos 
 \begin{lstlisting}[basicstyle=\tiny, language=bash]
 [root@localhost raid5]# sha256sum test 
@@ -145,6 +146,7 @@ Consistency Policy : resync
 [root@localhost raid5]# sha256sum test 
 49bc20df15e412a64472421e13fe86ff1c5165e18b2afccf160d4dc19fe68a14  test
 \end{lstlisting}
+
 aora provamos de crear un fixero nuevo con un dico parado i lo volvemos anyadir, depeus de la siconizacion vemos que el dico vuelve a estar ativo i comproavoas d enuve el sha256 i vemos que vuelven a coincidir 
 
 \begin{lstlisting}[basicstyle=\tiny, language=bash]
@@ -160,6 +162,7 @@ mdadm: Must give one of -a/-r/-f for subsequent devices at /dev/sdc1
 49bc20df15e412a64472421e13fe86ff1c5165e18b2afccf160d4dc19fe68a14  test2
 \end{lstlisting}
 
+\clearpage
 \section{El departamento técnico ha sentido hablar del sistema LVM y desean hacer cierta configuraciones/pruebas con ello. Con el fin de tomar la decisión correcta realizarán una pruebas con LVM sobre un sistema operativo Gnu/Linux virtualizado (p.ej. con VirtualBox).}
 
 el sistema de fichero o gestion de dicos LVM es un sistema que nos permite admiiistrar parciones fisicas ambtaiendonos de las mismas, es decir nos permite gestionar el espacio de varias particiones como si fuera uno solo independientemente de la cantidad de discos o particiones que estemeos usando. 
@@ -225,6 +228,7 @@ aora tenemos el grupo de volúmenes testing con 40Gb disponible para crear nuest
 
 aora ja tenemos un particion de 10G com Mirror nos disponemos a montarla i acer que se monte automaticamente al inicio del sistema y darle permisos a los grupos indicados, 
 
+\clearpage
 \begin{lstlisting}[basicstyle=\tiny, language=bash]
 [root@localhost ~]# mkfs -t ext4 /dev/testing/mirrorlv 
 mke2fs 1.44.3 (10-July-2018)
@@ -260,12 +264,6 @@ root@localhost ~]# sudo chmod -R 774 /media/lvm/
 [marc@localhost ~]$ ls -lh  /media
 total 4,0K
 drwxrwxr--. 4 root profesores 4,0K 13 nov. 02:42 lvm
-
-\end{lstlisting}
-
-provarem de extendre el volum avan de afagir el tercer disco i torarlo a extendre amb el 3r disco 
-
-\begin{lstlisting}[basicstyle=\tiny, language=bash]
 [root@localhost ~]# lvextend -l +2024 /dev/testing/mirrorlv 
   Extending 2 mirror images.
   Size of logical volume testing/mirrorlv changed from 10,00 GiB (2560 extents) to <17,91 GiB (4584 extents).
@@ -277,13 +275,6 @@ old_desc_blocks = 2, new_desc_blocks = 3
 El sistema de fitxers a /dev/testing/mirrorlv té ara una llargària de 4694016 (4k) blocs.
 [root@localhost ~]# pvcreate /dev/sdd 
   Physical volume "/dev/sdd" successfully created.
-[root@localhost ~]# pvs
-  PV         VG      Fmt  Attr PSize   PFree 
-  /dev/sdb   testing lvm2 a--  <20,00g <2,09g
-  /dev/sdc   testing lvm2 a--  <20,00g <2,09g
-  /dev/sdd           lvm2 ---   20,00g 20,00g
-[root@localhost ~]# vgextend testing /dev/sdd 
-  Volume group "testing" successfully extended
 
 [root@localhost marc]# lvdisplay 
   --- Logical volume ---
@@ -370,12 +361,18 @@ solucion extendida, ja que los documentas que se comenta son archovos de poco us
 
 \includegraphics[width=\textwidth]{structure.png}
 
-\section{En este ejercicio se realizará la configuración de la impresora que se encuentra asociada al servidor y a la cual pueden acceder diferentes usuarios. Instalar un servidor de impresión CUPS y configurarlo de forma tal que:
-}
+\clearpage
+\section{En este ejercicio se realizará la configuración de la impresora que se encuentra asociada al servidor y a la cual pueden acceder diferentes usuarios. Instalar un servidor de impresión CUPS y configurarlo de forma tal que:}
+
+\subsection{configuracion de acseso i administracion desde los demas equipos}
+para configurar el acceso i la adminitracion del servidor desde cuelquer host de la subred tendremos que editar el fichero /etc/cups/cupsd.conf i aviltar el acceso desde una subred, para mantetenr el puerto tendremos que acttivarlo en el firewall de fedora que pordefeto tiene los puertos inferiores al 1024 cerados.
+\lstinputlisting[basicstyle=\tiny, language=bash, firstline=152, lastline=162]{intalacio-cups}
 
 
 
 \clearpage
+\section{Realizar un script en Bash que a través de un menú y utilizando los comandos de gestión de paquetes permita obtener la siguiente información en forma ordenada:}
+
 
 \clearpage
 \section{bibliografia}

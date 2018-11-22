@@ -101,6 +101,67 @@ Instal·lat:
   cups-filters-libs-1.20.3-9.fc29.x86_64                poppler-utils-0.67.0-1.fc29.x86_64               
   qpdf-libs-8.2.1-1.fc29.x86_64                        
 
-S'ha completat!
 
-go to http://localhost:631/
+S'ha completat!
+[root@localhost ~]# yum install cups-pdfdistiller
+Fedora Modular 29 - x86_64                       14 kB/s |  25 kB     00:01    
+Fedora Modular 29 - x86_64 - Updates             12 kB/s |  24 kB     00:01    
+Fedora 29 - x86_64 - Updates                     12 kB/s |  25 kB     00:02    
+Fedora 29 - x86_64 - Updates                    2.3 MB/s |  13 MB     00:05    
+Fedora 29 - x86_64                               15 kB/s |  25 kB     00:01    
+No hi ha cap coincidència per a l'argument: cups-pdfdistiller
+Error: No s'ha pogut trobar cap coincidència
+[root@localhost ~]# yum install cups-pdf.x86_64 
+Display all 57273 possibilities? (y or n)
+[root@localhost ~]# yum install cups-pdf
+Última comprovació del venciment de les metadades: fa 0:00:58 el divendres, 16 de novembre de 2018, 02:05:04 EST.
+S'han resolt les dependències.
+================================================================================
+ Paquet            Arq.            Versió                 Dipòsit          Mida
+================================================================================
+Installing:
+ cups-pdf          x86_64          3.0.1-6.fc29           fedora           41 k
+
+Resum de la transacció
+================================================================================
+Instal·la  1 Paquet
+
+Mida total de la baixada: 41 k
+Mida un cop instal·lat: 225 k
+És correcte? [s/N]: s
+Es baixen els paquets:
+cups-pdf-3.0.1-6.fc29.x86_64.rpm                 31 kB/s |  41 kB     00:01    
+--------------------------------------------------------------------------------
+Total                                            14 kB/s |  41 kB     00:03     
+S'executa la comprovació de la transacció
+La comprovació de la transacció ha tingut èxit.
+S'executa la prova de la transacció
+La prova de la transacció ha tingut èxit.
+S'executa la transacció
+  Preparar            :                                                     1/1 
+Installed: cups-pdf-3.0.1-6.fc29.x86_64
+  Installing          : cups-pdf-3.0.1-6.fc29.x86_64                        1/1 
+  Executar l'scriptlet: cups-pdf-3.0.1-6.fc29.x86_64                        1/1 
+Installed: cups-pdf-3.0.1-6.fc29.x86_64
+  Verificar           : cups-pdf-3.0.1-6.fc29.x86_64                        1/1 
+
+Instal·lat:
+  cups-pdf-3.0.1-6.fc29.x86_64                                                  
+
+S'ha completat!
+[root@localhost cups]# nano /etc/cups/cupsd.conf
+<Location />
+  Order allow,deny
+  Allow from 192.168.243.0/24
+</Location>
+<Location /admin>
+  Allow from 192.168.243.0/24
+</Location>
+
+[root@localhost cups]# service cups restart
+Redirecting to /bin/systemctl restart cups.service
+
+
+
+/usr/sbin/lpadmin -p printer -u allow:user1,user2
+/usr/sbin/lpadmin -p printer -u deny:user1,user2
