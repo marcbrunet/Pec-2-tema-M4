@@ -1,6 +1,4 @@
 \documentclass[preprint,11pt]{elsarticle}
-
-
 \usepackage{fullpage} % Package to use full page
 \usepackage{parskip} % Package to tweak paragraph skipping
 \usepackage{tikz} % Package for drawing
@@ -368,12 +366,14 @@ solucion extendida, ja que los documentas que se comenta son archovos de poco us
 para configurar el acceso i la adminitracion del servidor desde cuelquer host de la subred tendremos que editar el fichero /etc/cups/cupsd.conf i aviltar el acceso desde una subred, para mantetenr el puerto tendremos que acttivarlo en el firewall de fedora que pordefeto tiene los puertos inferiores al 1024 cerados.
 \lstinputlisting[basicstyle=\tiny, language=bash, firstline=152, lastline=162]{intalacio-cups}
 
-
+\subsection{Que los usuarios que forman parte del grupo alumnos NO puedan imprimir pero si los del grupo profesores.}
+forcasom el accesos con los usuarios del grupo profesores 
+\lstinputlisting[basicstyle=\tiny, language=bash, firstline=165, lastline=173]{intalacio-cups}
 
 \clearpage
 \section{Realizar un script en Bash que a través de un menú y utilizando los comandos de gestión de paquetes permita obtener la siguiente información en forma ordenada:}
 
-
+\lstinputlisting[basicstyle=\tiny, language=bash, firstline=1, lastline=90]{script.sh}
 
 \clearpage
 \section{bibliografia}

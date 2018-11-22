@@ -162,6 +162,15 @@ S'ha completat!
 Redirecting to /bin/systemctl restart cups.service
 
 
+<Location />
+  Order allow,deny
+  Allow from 192.168.243.0/24
+  Require user @profesores
+</Location>
+<Location /admin>
+  Allow from 192.168.243.0/24
+  Require user @profesores
+</Location>
 
 /usr/sbin/lpadmin -p printer -u allow:user1,user2
 /usr/sbin/lpadmin -p printer -u deny:user1,user2
