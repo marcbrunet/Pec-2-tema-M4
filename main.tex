@@ -46,17 +46,17 @@
 
 \section{El departamento técnico ya ha comprado un servidor, de modelo PC de tipo torre. Dispone de 4 bahías de disco S-ATA, pero de momento sin ninguna unidad de disco instalada. Teniendo en cuenta los precios actuales de discos duros internos, analizar qué configuración de discos se debería comprar para disponer de:}
 
-primero realizaremos un pequenyo resumen de los discos que exsisten i los que nos escagan mengor para este uso en concreto:\smallskip
+primero realizaremos un pequeño resumen de los discos que existen i los mas adecuados para este uso en concreto:\smallskip
 
-\textbf{SSD}: son dicos de estado solidoo no tienen partes moviles, como ventage tenenmos una mayor velocoidad de lectura o escritura y un consumo menor de potencia, como desventaga tenenmos un nuro limitado es ecrituras i esto determina la vida del disco.\smallskip
+\textbf{SSD}: son "disco" de estado solido no tienen partes móviles, como ventage tenemos una mayor velocidad de lectura o escritura y un consumo menor de potencia, como desventaga tenemos un numero limitado es escrituras i esto determina la vida del disco, los tenemos con conector SATA i con conectores mas modernos como el NVMe, que nos elimina la limitación del bus SATA i aumentan mas la velocidad \smallskip
 
-\textbf{HDD}: son discon que se compemen por unos cuantos dicos girando y unos lectores moviendece i gravado la informacion en ellos, son mas lentos que los de estado solido, tienen un menor precio i sulen fallar menos. \smallskip
+\textbf{HDD}: son discos que se componen por unos cuantos discos girando y unos lectores gravado la información en ellos, son mas lentos que los de estado solido, tienen un menor precio. \smallskip
 
-una vez tenem los tipos de disco nesesarios montaria un disco de estado solidio para el sistema de 1TB si la opocion es muy cara o se sale del presuspeto podriamos pensar en reducir el tamanyo del sistema o buscar una solucion en HDD todo i que pensalizara el redimento del equipo, i al quedar con 3 conestores S-SATA disposile i desear protecion contra errores buscaremos un raid 5, nos proporcionara 2 vezez la campacidad e los dico que montemos i con protencion de falladas mecanica, pro tanto la configuracion idela seria:\smallskip
+una vez tenem los tipos de disco nesesarios montaria un disco de estado solidio para el sistema de 1TB si la opocion es muy cara o se sale del presuspeto podriamos pensar en reducir el tamanyo del sistema o buscar una solucion en HDD todo i que pensalizara el redimento del equipo, i al quedar con 3 conestores S-SATA disposile i desear protecion contra errores buscaremos un RAID5, nos proporcionara 2 vezez la capacidad e los disco que montemos i con protección de falladas mecánica, pro tanto la configuración ideal seria:\smallskip
 
 1 disco SSD 1TB SATA  y 3 discos  HDD 2,5 TB SATA\smallskip
 
-encontrar disco de 2,5TB puede ser complicado por eso escoageremos discos de 3TB para degar una unidad final de 6 TB en raid 5, depues particionaremos el disco solido para intalar el sistema operativo dependera de la configuracion del sistam ya sea windows o linux, en el sistema de fixero que disponemos de 3 discos HDD usaremos el raid para montar el raid usaremos un estorno virtual con discos de 20 GB como pruba de consepto i sistema operativo fedora. nos quedara una distibucion de discos para el rayd similar a esto 
+encontrar disco de 2,5TB puede ser complicado por eso escogeremos discos de 3TB para degar una unidad final de 6 TB en RAID5, depues participaremos el disco solido para instalar el sistema operativo, eso dependerá de la configuración del sistema ya sea Windows o Linux, en el sistema de fixero que disponemos de 3 discos HDD usaremos el raid para montar el raid usaremos un estorno virtual con discos de 20 GB como pruba de consepto i sistema operativo fedora. nos quedara una distibucion de discos para el rayd similar a esto 
 
 \begin{lstlisting}[basicstyle=\tiny, language=bash]
 root@localhost marc]# fdisk -l | grep sd
@@ -367,13 +367,17 @@ para configurar el acceso i la adminitracion del servidor desde cuelquer host de
 \lstinputlisting[basicstyle=\tiny, language=bash, firstline=152, lastline=162]{intalacio-cups}
 
 \subsection{Que los usuarios que forman parte del grupo alumnos NO puedan imprimir pero si los del grupo profesores.}
-forcasom el accesos con los usuarios del grupo profesores 
+filtramos el accesos con los usuarios del grupo profesores 
 \lstinputlisting[basicstyle=\tiny, language=bash, firstline=165, lastline=173]{intalacio-cups}
 
 \clearpage
 \section{Realizar un script en Bash que a través de un menú y utilizando los comandos de gestión de paquetes permita obtener la siguiente información en forma ordenada:}
 
-\lstinputlisting[basicstyle=\tiny, language=bash, firstline=1, lastline=90]{script.sh}
+realizamos una funciones nesesarias para las tareas de forma indidualizadas\smallskip
+
+funcio dels paquets intalats, comprovem la distribuic en concret\footnote{he echo servir las distribbuciones ubuntu i fedora, deveria funcionar en redhat devenin entre otoros.} i aplicamos el gestor de paquetes en cuention 
+\lstinputlisting[basicstyle=\tiny, language=bash, firstline=8, lastline=26]{script.sh}
+
 
 \clearpage
 \section{bibliografia}
