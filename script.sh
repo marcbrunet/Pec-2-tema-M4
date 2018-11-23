@@ -27,7 +27,6 @@ function installedPackages {
 function updatePackages {
   distribution=$(cat /etc/os-release |  awk -F'=' '{if($1=="NAME") print $2 }')
   if [ "$distribution" = "fedora" ]; then
-    #statements
     updateDNF=$(dnf list --updates | awk '{if(NR>2)print $1}')
     printLines "$updateDNF"
   fi
