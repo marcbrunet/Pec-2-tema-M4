@@ -7,20 +7,15 @@ function printLines () {
 }
 function installedPackages {
   distribution=$(cat /etc/os-release |  awk -F'=' '{if($1=="NAME") print $2 }')
-  echo "$distribution"
   if [ "$distribution" = "fedora" ]; then
-    installedDNF=$(dnf list --installed | awk '{print $1 }')
-    availableDNF=$(dnf list --available | awk '{print $1 }')
     mkdir /tmp/pakages
     touch /tmp/pakages/installed.txt
     touch /tmp/pakages/available.txt
-    echo "$installedDNF" > /tmp/pakages/installed.txt
-    echo "$availableDNF" > /tmp/pakages/available.txt
+    dnf list --installed | awk '{print $1 }' > /tmp/pakages/installed.txt
+    dnf list --available | awk '{print $1 }' > /tmp/pakages/available.txt
     echo "listado de paquetes en: /tmp/pakages/"
   fi
   if [ "$distribution" = '"Ubuntu"' ]; then
-    installedAPT=$(apt list --installed)
-    availableAPT=$(apt-cache search .)
     mkdir /tmp/pakages
     touch /tmp/pakages/installed.txt
     touch /tmp/pakages/available.txt
